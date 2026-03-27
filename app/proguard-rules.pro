@@ -1,0 +1,2 @@
+-keep class com.otel.mrz.data.** { *; }
+-keepattributes Signature
