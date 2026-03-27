@@ -11,14 +11,12 @@ object MrzParser {
             .map { it.trim().uppercase().replace(" ", "") }
             .filter { MRZ_LINE_REGEX.matches(it) }
 
-        // TD3: Pasaport - 2 satır x 44 karakter
         val td3Lines = lines.filter { it.length == 44 }
         if (td3Lines.size >= 2) {
             parseTd3(td3Lines[td3Lines.size - 2], td3Lines[td3Lines.size - 1])
                 ?.let { return it }
         }
 
-        // TD1: Kimlik kartı - 3 satır x 30 karakter
         val td1Lines = lines.filter { it.length == 30 }
         if (td1Lines.size >= 3) {
             parseTd1(td1Lines[td1Lines.size - 3], td1Lines[td1Lines.size - 2], td1Lines[td1Lines.size - 1])
@@ -28,7 +26,6 @@ object MrzParser {
         return null
     }
 
-    // TD3 - Pasaport
     private fun parseTd3(line1: String, line2: String): Guest? {
         return try {
             val namePart = line1.substring(5).split("<<")
@@ -51,15 +48,21 @@ object MrzParser {
                 expiry = expiry,
                 docType = "PASSPORT"
             )
-        } catch (e: Exception) {
-            null
-        }
+        } catch (e: Exception) { null }
     }
 
-    // TD1 - Kimlik Kartı
     private fun parseTd1(line1: String, line2: String, line3: String): Guest? {
         return try {
+            // Belge numarası (seri no)
             val docNumber = line1.substring(5, 14).replace("<", "")
+
+            // TC Kimlik No — Türk kimlik kartlarında line2'nin 15-25. karakterleri
+            val optionalData = line2.substring(15, 26).replace("<", "")
+            val tcNumber = if (optionalData.length == 11 && optionalData.all { it.isDigit() }) {
+                optionalData
+            } else {
+                docNumber
+            }
 
             val dob = line2.substring(0, 6)
             val gender = line2.substring(7, 8).let { if (it == "<") "M" else it }
@@ -73,15 +76,13 @@ object MrzParser {
             Guest(
                 firstName = firstName,
                 lastName = lastName,
-                docNumber = docNumber,
+                docNumber = tcNumber,
                 dob = dob,
                 gender = gender,
                 nationality = nationality,
                 expiry = expiry,
                 docType = "ID_CARD"
             )
-        } catch (e: Exception) {
-            null
-        }
+        } catch (e: Exception) { null }
     }
 }
