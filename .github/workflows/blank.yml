@@ -21,14 +21,23 @@ jobs:
       - name: Android SDK kur
         uses: android-actions/setup-android@v3
 
-      - name: Gradle wrapper oluştur
+      - name: Gradle kur
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.2'
 
-      - name: Wrapper jar oluştur ve derle
+      - name: Wrapper oluştur
+        run: gradle wrapper --gradle-version 8.2
+
+      - name: Dosya yapısını göster
         run: |
-          gradle wrapper --gradle-version 8.2
+          ls -la
+          ls -la app/ || echo "app klasörü yok"
+          cat settings.gradle
+          cat app/build.gradle
+
+      - name: APK derle
+        run: |
           chmod +x gradlew
           ./gradlew assembleDebug
 
