@@ -11,22 +11,21 @@ jobs:
     steps:
       - name: Kodu indir
         uses: actions/checkout@v4
+
       - name: Java kur
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Gradle cache
-        uses: actions/cache@v4
+
+      - name: Gradle kur
+        uses: gradle/actions/setup-gradle@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*') }}
+          gradle-version: '8.2'
+
       - name: APK derle
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+        run: gradle assembleDebug
+
       - name: APK kaydet
         uses: actions/upload-artifact@v4
         with:
