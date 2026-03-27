@@ -18,13 +18,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Gradle kur
+      - name: Android SDK kur
+        uses: android-actions/setup-android@v3
+
+      - name: Gradle wrapper oluştur
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.2'
 
-      - name: APK derle
-        run: gradle assembleDebug
+      - name: Wrapper jar oluştur ve derle
+        run: |
+          gradle wrapper --gradle-version 8.2
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: APK kaydet
         uses: actions/upload-artifact@v4
