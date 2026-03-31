@@ -55,8 +55,8 @@ object MrzParser {
         return try {
             val docNumber = line1.substring(5, 14).replace("<", "")
 
-            // TC Kimlik No — Line 1, karakter 15-25
-            val optionalData = line1.substring(15, 26)
+            // TC Kimlik No — Line 1, karakter 15-27
+            val optionalData = line1.substring(15, 27)
                 .replace("<", "")
                 .replace(" ", "")
             val tcNumber = if (optionalData.length == 11 && optionalData.all { it.isDigit() }) {
