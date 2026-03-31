@@ -53,11 +53,12 @@ object MrzParser {
 
     private fun parseTd1(line1: String, line2: String, line3: String): Guest? {
         return try {
-            // Belge numarası (seri no)
             val docNumber = line1.substring(5, 14).replace("<", "")
 
-            // TC Kimlik No — Türk kimlik kartlarında line2'nin 15-25. karakterleri
-            val optionalData = line1.substring(15, 26).replace("<", "")
+            // TC Kimlik No — Line 1, karakter 15-25
+            val optionalData = line1.substring(15, 26)
+                .replace("<", "")
+                .replace(" ", "")
             val tcNumber = if (optionalData.length == 11 && optionalData.all { it.isDigit() }) {
                 optionalData
             } else {
